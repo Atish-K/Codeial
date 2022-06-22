@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const postSchema = new mongoose.Schema({
     content: {
         type: String,
-        required: trusted
+        required: true
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
