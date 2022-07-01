@@ -72,14 +72,20 @@ module.exports.createSession = function(req,res){
 }
 
 module.exports.destroySession = function(req, res){
-    // req.logout();
+    req.logout(function(err){
+        if(err){
+            return next(err);
+        }
+        req.flash('success','You have Logged Out')
+        res.redirect('/')
+    });
     
     // return res.redirect('/');
-      
-    req.session.destroy((err) => {
-        // req.flash('success','You have Logged Out')
+     // this is also work
+    // req.session.destroy((err) => {
+    //     // req.flash('success','You have Logged Out')
        
-        res.redirect('/') // will always fire after session is destroyed
-      })
+    //     res.redirect('/') // will always fire after session is destroyed
+    //   })
       
 }
