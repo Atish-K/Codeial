@@ -122,7 +122,7 @@ module.exports.destroySession = function(req, res){
         req.flash('success','You have Logged Out')
         res.redirect('/')
     });
-    
+}    
     // return res.redirect('/');
      // this is also work
     // req.session.destroy((err) => {
@@ -131,4 +131,3 @@ module.exports.destroySession = function(req, res){
     //     res.redirect('/') // will always fire after session is destroyed
     //   })
       
-}
