@@ -1,6 +1,5 @@
 const Post = require('../../../models/post');
 const Comment = require('../../../models/comment');
-
 module.exports.index = async function(req, res){
 
     let posts = await Post.find({})
@@ -15,14 +14,13 @@ module.exports.index = async function(req, res){
 
     return res.json(200, {
         message: "List of posts",
-        posts: posts,
-        url: 'codingninjas.com',
-        brief: "djhfkjdshfjksdhfjk"
+        posts: posts
     })
 }
 
 
 module.exports.destroy = async function(req,res){
+
     try{
         let post = await Post.findById(req.params.id);
 
@@ -31,8 +29,9 @@ module.exports.destroy = async function(req,res){
     
             await Comment.deleteMany({post: req.params.id});
 
+
             return res.json(200, {
-                messege: "Post and associated comments deleted sucessfully!"
+                message: "Post and associated comments deleted sucessfully!"
             });
         }else{
             return res.json(401, {
@@ -44,7 +43,7 @@ module.exports.destroy = async function(req,res){
         //req.flash('error',err);
         console.log('********', err);
         return res.json(500, {
-            messege: "Internal Server Error"
+            message: "Internal Server Error"
         });
     }
     

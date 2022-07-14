@@ -23,7 +23,7 @@ module.exports.createSession = async function(req,res){
     }catch(err){
         console.log('********', err);
         return res.json(500, {
-            messege: "Internal Server Error"
+            message: "Internal Server Error"
         });
     }
 }

@@ -10,7 +10,8 @@ module.exports.create = async function(req, res){
        
         if(req.xhr){
               // if we want to populate just the name of the user (we'll not want to send the password in the API), this is how we do it!
-             // post = await post.populate('user', 'name').execPopulate();
+            post = await post.populate('user', 'name');
+            //post = post.execPopulate();
             return res.status(200).json({
                 data: {
                     post: post
@@ -24,6 +25,8 @@ module.exports.create = async function(req, res){
 
     }catch(err){
         req.flash('error',err);
+        console.log(err);
+
         return res.redirect('back');
 
     }
@@ -45,14 +48,14 @@ module.exports.destroy = async function(req,res){
                     data: {
                         post_id: req.params.id
                     },
-                    messege: "Post deleted"
+                    message: "Post deleted"
                 });
             }
 
             req.flash('success','Post and associated comments deleted!');
             return res.redirect('back');
         }else{
-            req.flash('error','You cannot delete this post!');
+            req.flash('error', 'You cannot delete this post!');
             return res.redirect('back');
         }
 

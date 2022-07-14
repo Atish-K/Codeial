@@ -32,13 +32,13 @@ passport.use(new LocalStrategy({
 ));
 
 // Serializeing the user to decide which keyis to be kept in the cookies
-passport.serializeUser(function(user,done){
-    done(null,user.id);
+passport.serializeUser(function(user, done){
+    done(null, user.id);
 })
 
 // deserialzing the user from the key in the cookies
-passport.deserializeUser(function(id,done){
-    User.findById(id, function(err,user){
+passport.deserializeUser(function(id, done){
+    User.findById(id, function(err, user){
         if(err){
             console.log('Error in finding user --> Passport');
             return done(err);
@@ -49,7 +49,7 @@ passport.deserializeUser(function(id,done){
 });
 
 //check if the user is authenticated
-passport.checkAuthentication = function(req,res,next){
+passport.checkAuthentication = function(req, res, next){
     // if the user is signed in, then pass on the request to the next function(controller's action)
     if(req.isAuthenticated()){
         return next();
@@ -58,7 +58,7 @@ passport.checkAuthentication = function(req,res,next){
     return res.redirect('/users/sign-in');
 }
 
-passport.setAuthenticatedUser = function(req,res,next){
+passport.setAuthenticatedUser = function(req, res, next){
     if(req.isAuthenticated()){
         // req.user contains the current signed in user from the session cookie and we arejust sending this to the local for the views
         res.locals.user = req.user;
