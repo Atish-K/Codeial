@@ -50,7 +50,7 @@ module.exports.update = async function(req ,res){
             });
             
         }catch(err){
-            req.flash('error', 'Unauthorized!');
+            req.flash('error', err);
             return res.redirect('back');
         }
     }else{
