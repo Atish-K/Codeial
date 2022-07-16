@@ -3,7 +3,7 @@ const Post = require("../models/post");
 const Comment = require("../models/comment");
 
 
-module.exports.toggleLike = async function(req. res){
+module.exports.toggleLike = async function(req, res){
     try{
 
         // Likes/toggle/?id=abcdef&type=Post
@@ -31,7 +31,7 @@ module.exports.toggleLike = async function(req. res){
 
             existingLike.remove();
             deleted = true;
-            
+
         }else{
             //else make a new like
 
