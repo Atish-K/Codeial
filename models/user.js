@@ -19,7 +19,14 @@ const userSchema = new mongoose.Schema({
     },
     avatar: {
         type: String
-    }
+    },
+    friendships: [
+        { 
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Friendship' 
+        }
+    ]
+
 }, {
     timestamps: true
 });
@@ -30,8 +37,8 @@ let storage = multer.diskStorage({
     },
     filename: function (req, file, cb) {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-      cb(null, file.fieldname + '-' + uniqueSuffix);
-    //   cb(null, file.fieldname + '-' + Date.now());
+      //cb(null, file.fieldname + '-' + uniqueSuffix);
+       cb(null, file.fieldname + '-' + Date.now());
     }
   });
 
