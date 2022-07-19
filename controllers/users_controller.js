@@ -1,5 +1,8 @@
 const User = require('../models/user');
+const fs = require('fs');
+const path = require('path');
 
+// let's keep it same as before
 module.exports.profile = function(req,res){
     User.findById(req.params.id, function(err, user){
         return res.render('user_profile',{
@@ -10,15 +13,52 @@ module.exports.profile = function(req,res){
    
 }
 
-module.exports.update = function(req ,res){
+
+module.exports.update = async function(req ,res){
+    // if(req.user.id == req.params.id){
+    //     User.findByIdAndUpdate(req.params.id, req.body, function(err, user){
+    //         req.flash('success', 'Updated!');
+    //         return res.redirect('back');
+    //     });
+    // }else{
+    //     req.flash('error', 'Unauthorized!');
+    //     return res.status(401).send('Unauthorized');
+    // }
     if(req.user.id == req.params.id){
-        User.findByIdAndUpdate(req.params.id, req.body, function(err, user){
+
+        try{
+            let user = await User.findById(req.params.id);
+            User.uploadedAvatar(req, res, function(err){
+                if(err){
+                    console.log('****Multer Error***', err);
+                }
+                user.name = req.body.name;
+                user.email = req.body.email;
+
+                if(req.file){
+
+                    if(user.avatar){
+                        fs.unlinkSync(path.join(__dirname, '..', user.avatar));
+                    }
+
+
+                    // this is saving the path of the uploaded file into the avatar field in the user
+                    user.avatar = User.avatarPath + '/' + req.file.filename;
+                }
+                user.save();
+                return res.redirect('back');
+            });
+            
+        }catch(err){
+            req.flash('error', err);
             return res.redirect('back');
-        });
+        }
     }else{
-        return res.status(401).send('Unauthorized');
-    }
+        req.flash('error', 'Unauthorized!');
+         return res.status(401).send('Unauthorized');
+        }
 }
+
 
 // Render the sign up page
 module.exports.signUp = function(req,res){
@@ -31,8 +71,11 @@ module.exports.signUp = function(req,res){
         title: "Codeial | Sign Up"
     })
 }
+
+
 // Render the sign in page
 module.exports.signIn = function(req,res){
+
     if(req.isAuthenticated()){
         return res.redirect('/users/profile');
     }
@@ -43,22 +86,23 @@ module.exports.signIn = function(req,res){
 }
 
 // get the sign up data
-
 module.exports.create = function(req,res){
     if(req.body.password != req.body.confirm_password){
+        req.flash('error', 'Passwords do not match');
         return res.redirect('back');
     }
 
     User.findOne({email: req.body.email}, function(err,user){
-        if(err){console.log('error in finding user in signing uo'); return}
+         if(err){req.flash('error', err); return}
 
         if(!user){
             User.create(req.body, function(err,user){
-                if(err){console.log('error in creating user whilesigning up'); return}
+                if(err){req.flash('error', err); return}
 
                 return res.redirect('/users/sign-in');
             })
         }else{
+            req.flash('success', 'You have signed up, login to continue!');
             return res.redirect('back');
         }
     });
@@ -79,7 +123,7 @@ module.exports.destroySession = function(req, res){
         req.flash('success','You have Logged Out')
         res.redirect('/')
     });
-    
+}    
     // return res.redirect('/');
      // this is also work
     // req.session.destroy((err) => {
@@ -88,4 +132,3 @@ module.exports.destroySession = function(req, res){
     //     res.redirect('/') // will always fire after session is destroyed
     //   })
       
-}
